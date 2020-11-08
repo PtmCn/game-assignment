@@ -140,7 +140,7 @@ int main()
                                 platformClass(205,200, earthsprite1),
                                 platformClass(310,200, earthsprite1),
                                 platformClass(415,200, earthsprite1),
-                                platformClass(520,200, earthsprite1),};
+                                platformClass(520,95, earthsprite1),};
 
     sf::View view(sf::Vector2f(0.0f, 0.0f),sf::Vector2f(windowWidth,windowHeight));
     sf::Clock gameClock;
@@ -164,7 +164,7 @@ int main()
         float deltatime = gameClock.getElapsedTime().asSeconds();
 
         playerObj.update(keyUp,keyDown,keyRight,keyLeft,level, deltatime);
-        view.setCenter(sf::Vector2f(playerObj.image.getPosition().x+playerObj.image.getLocalBounds().width * playerObj.scale/0.2f,playerObj.image.getPosition().y+playerObj.image.getLocalBounds().height * playerObj.scale));
+        view.setCenter(sf::Vector2f(playerObj.image.getPosition().x+playerObj.image.getLocalBounds().width * playerObj.scale/2.0f,playerObj.image.getPosition().y+playerObj.image.getLocalBounds().height * playerObj.scale/2.0f));
         gameClock.restart().asSeconds();
 
         window.setView(view);
