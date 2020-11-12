@@ -59,11 +59,6 @@ class playerClass{
             scale = 1;
             onGround = false;
             iscollide = false;
-            leftside = image.getPosition().x;
-            rightside = image.getPosition().x + (image.getLocalBounds().width * scale);
-            topside = image.getPosition().y;
-            bottomside = image.getPosition().y + (image.getLocalBounds().height *scale);
-
         }
         void update(bool keyUp,bool keyDown,bool keyRight,bool keyLeft,platformClass level[5],float deltatime){
            if (keyRight){
@@ -135,27 +130,14 @@ class boxClass{
         bool iscollide;
         sf::Sprite image;
         boxClass(int initxpos,int initypos,sf::Sprite sprite){
-            scale = 5;
+            scale = 3;
             iscollide = false;
             image = sprite;
             image.setPosition(initxpos,initypos);
             image.setScale(scale,scale);
-            leftside = image.getPosition().x;
-            rightside = image.getPosition().x + (image.getLocalBounds().width * scale);
-            topside = image.getPosition().y;
-            bottomside = image.getPosition().y + (image.getLocalBounds().height *scale);
         }
-        void update(bool keyRight,bool keyLeft,playerClass playerObj,float deltatime){
-            if (keyRight){
-                xvel = 200;
-            }
-            if (keyLeft){
-                xvel = -200;
-            }
-            if (!(keyRight || keyLeft)){
-                xvel = 0 ;
-           }
-            iscollide = boxcollide(keyRight,keyLeft,xvel,playerObj,deltatime);
+        void update(bool keyRight,bool keyLeft,playerClass playerObj,boxClass box1,float deltatime){
+            iscollide = boxcollide(keyRight,keyLeft,xvel,playerObj,box1,deltatime);
             if(iscollide){
                 if (keyRight){
                     xvel = 200;
@@ -171,13 +153,13 @@ class boxClass{
                 xvel = 0;
             image.move(sf::Vector2f(xvel*deltatime,0));
         }
-        int boxcollide(bool keyRight,bool keyLeft,float xveldelta,playerClass playerObj,float deltatime){
-            if(playerObj.image.getPosition().x + (playerObj.image.getLocalBounds().width * scale) > image.getPosition().x &&
-               playerObj.image.getPosition().x < image.getPosition().x + (image.getLocalBounds().width * scale)){
-                iscollide = true;cout<<image.getPosition().x<<endl;}
+        int boxcollide(bool keyRight,bool keyLeft,float xveldelta,playerClass playerObj,boxClass box1,float deltatime){
+            if(playerObj.image.getGlobalBounds().intersects(box1.image.getGlobalBounds())){
+                iscollide = true;}
             else{
-                iscollide = false;cout<<image.getPosition().x<<endl;
+                iscollide = false;
             }
+            return iscollide;
 
         }
 
@@ -217,7 +199,7 @@ int main(){
                                 platformClass(415,200, earthsprite1),
                                 platformClass(520,95, earthsprite1),};
 
-    boxClass box1 = {boxClass(205,95, boxsprite1)};
+    boxClass box1 = {boxClass(205,137, boxsprite1)};
 
     sf::View view(sf::Vector2f(0.0f, 0.0f),sf::Vector2f(windowWidth,windowHeight));
     sf::Clock gameClock;
@@ -241,7 +223,7 @@ int main(){
         float deltatime = gameClock.getElapsedTime().asSeconds();
 
         playerObj.update(keyUp,keyDown,keyRight,keyLeft,level, deltatime);
-        box1.update(keyRight,keyLeft,playerObj,deltatime);
+        box1.update(keyRight,keyLeft,playerObj,box1,deltatime);
         view.setCenter(sf::Vector2f(playerObj.image.getPosition().x+playerObj.image.getLocalBounds().width * playerObj.scale/2.0f,playerObj.image.getPosition().y+playerObj.image.getLocalBounds().height * playerObj.scale/2.0f));
         gameClock.restart().asSeconds();
 
