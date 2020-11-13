@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <windows.h>
+#include "./include/Entity.hpp"
+#include "./include/Player.hpp"
+
 
 const int windowWidth = 1260;
 const int windowHeight = 720;
@@ -42,15 +45,10 @@ class playerClass{
         float ypos;
         float xvel;
         float yvel;
-        float topside;
-        float bottomside;
-        float rightside;
-        float leftside;
         int scale;
         sf::Sprite image;
-        playerClass(int initxpos,int initypos,sf::Sprite sprite){
+        playerClass(sf::Sprite sprite){
             image = sprite;
-            image.setPosition(initxpos,initypos);
             playerFaceRight = true;
             xpos = 0;
             ypos = 0;
@@ -59,6 +57,8 @@ class playerClass{
             scale = 1;
             onGround = false;
             iscollide = false;
+
+
         }
         void update(bool keyUp,bool keyDown,bool keyRight,bool keyLeft,platformClass level[5],float deltatime){
            if (keyRight){
@@ -75,7 +75,8 @@ class playerClass{
            if (keyDown){
                 yvel = 200;
            }
-           if (!(keyRight || keyLeft)){
+           if (!(keyRight || keyLeft))
+           {
                 xvel = 0 ;
            }
            if (onGround == true){
@@ -113,60 +114,10 @@ class playerClass{
                 }
             }
         }
-
 };
 
-class boxClass{
-    public:
-        float xpos;
-        float ypos;
-        float xvel;
-        float yvel;
-        int scale;
-        float topside;
-        float bottomside;
-        float rightside;
-        float leftside;
-        bool iscollide;
-        sf::Sprite image;
-        boxClass(int initxpos,int initypos,sf::Sprite sprite){
-            scale = 3;
-            iscollide = false;
-            image = sprite;
-            image.setPosition(initxpos,initypos);
-            image.setScale(scale,scale);
-        }
-        void update(bool keyRight,bool keyLeft,playerClass playerObj,boxClass box1,float deltatime){
-            iscollide = boxcollide(keyRight,keyLeft,xvel,playerObj,box1,deltatime);
-            if(iscollide){
-                if (keyRight){
-                    xvel = 200;
-                }
-                if (keyLeft){
-                    xvel = -200;
-                }
-                if (!(keyRight || keyLeft)){
-                    xvel = 0 ;
-                }
-            }
-            else
-                xvel = 0;
-            image.move(sf::Vector2f(xvel*deltatime,0));
-        }
-        int boxcollide(bool keyRight,bool keyLeft,float xveldelta,playerClass playerObj,boxClass box1,float deltatime){
-            if(playerObj.image.getGlobalBounds().intersects(box1.image.getGlobalBounds())){
-                iscollide = true;}
-            else{
-                iscollide = false;
-            }
-            return iscollide;
-
-        }
-
-};
-
-
-int main(){
+int main()
+{
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Game");
 
@@ -182,16 +133,11 @@ int main(){
     sf::Sprite earthsprite1(platformSpriteSheet);
     earthsprite1.setTextureRect(sf::IntRect(26, 95, 21, 21));
 
-    sf::Texture boxSpriteSheet;
-    boxSpriteSheet.loadFromFile("assets/images/spritesheet.png");
-    sf::Sprite boxsprite1(boxSpriteSheet);
-    boxsprite1.setTextureRect(sf::IntRect(256,141,21,21));
-
     sf::Texture PlayerTexture1;
     PlayerTexture1.loadFromFile("assets/images/slime.png.");
     sf::Sprite PlayerSprite1(PlayerTexture1);
 
-    playerClass playerObj= {playerClass(100,150,PlayerSprite1)};
+    playerClass playerObj(PlayerSprite1);
 
     platformClass level[5] = {platformClass(100,200, earthsprite1),
                                 platformClass(205,200, earthsprite1),
@@ -199,7 +145,7 @@ int main(){
                                 platformClass(415,200, earthsprite1),
                                 platformClass(520,95, earthsprite1),};
 
-    boxClass box1 = {boxClass(205,137, boxsprite1)};
+    Player player("assets/images/slime.png.",200,200,60,60);
 
     sf::View view(sf::Vector2f(0.0f, 0.0f),sf::Vector2f(windowWidth,windowHeight));
     sf::Clock gameClock;
@@ -223,7 +169,6 @@ int main(){
         float deltatime = gameClock.getElapsedTime().asSeconds();
 
         playerObj.update(keyUp,keyDown,keyRight,keyLeft,level, deltatime);
-        box1.update(keyRight,keyLeft,playerObj,box1,deltatime);
         view.setCenter(sf::Vector2f(playerObj.image.getPosition().x+playerObj.image.getLocalBounds().width * playerObj.scale/2.0f,playerObj.image.getPosition().y+playerObj.image.getLocalBounds().height * playerObj.scale/2.0f));
         gameClock.restart().asSeconds();
 
@@ -232,8 +177,7 @@ int main(){
         window.clear();
 
         window.draw(playerObj.image);
-
-        window.draw(box1.image);
+        window.draw(player);
 
         for(int i = 0; i<5 ; i++){
             window.draw(level[i].image);

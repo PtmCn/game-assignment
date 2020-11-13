@@ -8,4 +8,4 @@ void Entity::draw(sf::RenderTarget& target, sf:: Renderstates states)const{
 
     target.draw(m_vertices, states);
 
-}
+};
