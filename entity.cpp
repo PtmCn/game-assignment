@@ -2,10 +2,13 @@
 #include "include/Entity.hpp"
 
 void Entity::draw(sf::RenderTarget& target, sf:: Renderstates states)const{
-    states.transform = m_transform;
+    states.transform *= getTransform();
 
-    states.texture = &m_texture;
+    states.texture = &texture;
 
-    target.draw(m_vertices, states);
+    target.draw(vertices, states);
+}
 
-};
+void Entity::setTexture(const char* tex){
+    texture.loadFromFile(tex);
+}

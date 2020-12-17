@@ -1,12 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include "./Entity.hpp"
+#include "../include/Hitbox.hpp"
+
+#include "../include/Entity.hpp"
 
 class Player : public Entity{
 private:
-    float m_xvel;
-    float m_yvel;
+    float speed;
+
 public:
-    Player (const std::string& textureFile, float i_x ,float i_y,float i_w,float i_h);
+    Player (float X, float Y, float W, float H);
+    void update(bool &W, bool &A, bool &S, bool &D, float &deltaTime);
 };
