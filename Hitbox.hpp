@@ -1,5 +1,5 @@
 #pragma once
-class hitBox{
+class Hitbox{
 public:
     float left, right, top , bottom;
 

@@ -5,7 +5,6 @@
 
 class Platform : public Entity{
 public:
-    Platform ();
-    void init(float X, float Y, float W, float H);
+    Platform(float X, float Y, float W, float H, sf::Texture& t);
 };
 

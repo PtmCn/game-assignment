@@ -1,17 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vector>
 #include "../include/Hitbox.hpp"
 
-class Entity : public sf::Drawable, public sf::Transformable{
-    private:
-//        Entity::draw(sf::RenderTarget target, sf::RenderStates states)const;
+class Entity : public sf::Sprite{
     public:
-        sf::VertexArray vertices;
-        sf::Texture texture;
-        sf::Vector2f velocity;
-        float x,y,w,h;
-        hitBox hitbox;
-
-        void setTexture(const char* tex);
+        sf::Vector2f velocity ,size , frameSize , framesAmount;
+        std::vector<sf::IntRect> frames;
+        Hitbox hitbox;
 
 };
