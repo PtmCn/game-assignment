@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
 #include "./include/Entity.hpp"
@@ -14,18 +15,30 @@ int main(){
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "mystery forest");
 
-    bool W,A,S,D;
+    bool W,A,S,D,Q;
 
+    sf::SoundBuffer myBuffer;
+    myBuffer.loadFromFile("assets/Music/bgm.wav");
+    sf::Sound backgroundSound;
+    backgroundSound.setBuffer(myBuffer);
+    backgroundSound.play();
+    backgroundSound.setLoop(true);
 
+    sf::Texture Bg;
+    sf::Texture Box;
     sf::Texture playerTex;
     sf::Texture platformsTex;
     sf::Texture platformsTex2;
     sf::Texture platformsTex3;
 
+    Box.loadFromFile("assets/images/Box1.png");
+    Bg.loadFromFile("assets/images/Bkg2.png");
     playerTex.loadFromFile("assets/images/Player.png");
     platformsTex.loadFromFile("assets/images/grass.png");
     platformsTex2.loadFromFile("assets/images/wall r.png");
     platformsTex3.loadFromFile("assets/images/goal.png");
+
+    sf::Sprite background(Bg);
 
     int levelArray[15][15] = {{2,3,0,0,0,0,0,0,0,0,0,0,0,0,2},
                               {2,1,1,1,1,1,1,0,0,1,1,1,0,0,2},
@@ -33,7 +46,7 @@ int main(){
                               {2,0,0,0,1,0,0,0,0,0,0,0,1,0,2},
                               {2,0,0,1,1,1,1,1,1,0,0,1,0,0,2},
                               {2,1,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                              {2,1,1,1,1,1,0,0,0,0,0,0,0,0,2},
+                              {2,0,1,1,1,1,0,0,0,0,0,0,0,0,2},
                               {2,0,0,0,0,0,1,0,0,0,0,0,0,0,2},
                               {2,0,0,0,0,0,0,0,1,0,0,0,0,0,2},
                               {1,1,1,1,1,1,1,1,1,1,1,1,1,1,2},
@@ -55,6 +68,10 @@ int main(){
                 Platform p( j * 46,i * 46, 46, 46, platformsTex3);
                 level.push_back(p);
             }
+            else if (levelArray[i][j] == 4){
+                Platform p( j * 46,i * 46, 23, 23, Box);
+                level.push_back(p);
+            }
         }
     }
 
@@ -68,8 +85,7 @@ int main(){
     sf::Clock gameClock;
 
 	// Start the game loop
-    while (window.isOpen())
-    {
+    do{
         // Process events
         sf::Event event;
         while (window.pollEvent(event))
@@ -83,6 +99,7 @@ int main(){
         A = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         S = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
         D = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+        Q = sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
 
         player.update(W,A,S,D,level);
         if(player.getPosition().x == 94 && player.getPosition().y < 46)break;//endgame
@@ -92,13 +109,16 @@ int main(){
         // Clear screen
         window.clear();
 
+        window.draw(background);
         window.draw(player);
+
 
         for(Platform& p : level){
             window.draw(p);
         }
         window.display();
     }
+    while (Q!=1 && (window.isOpen()));
 
     return EXIT_SUCCESS;
 }
